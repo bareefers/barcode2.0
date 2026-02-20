@@ -28,6 +28,10 @@ import Image from 'next/image';
 import type { Frag, FragFilter } from '@/types';
 
 export default function CollectionPage() {
+  const loginUrl = typeof window !== 'undefined'
+    ? `https://bareefers.org/forum/login/?_xfRedirect=${encodeURIComponent(window.location.href)}`
+    : 'https://bareefers.org/forum/login/';
+
   const { data: collectionData, isLoading, error } = useCollection();
   const { data: enumsData } = useEnums();
   const { data: settingsData } = useSettings();
@@ -110,20 +114,19 @@ export default function CollectionPage() {
             </CardTitle>
             <CardDescription>
               {is401
-                ? 'Log in at the URL below, then return here and refresh.'
+                ? 'Please log in to the forum to continue.'
                 : 'Unable to load your collection. Please try again later.'}
             </CardDescription>
           </CardHeader>
           {is401 && (
             <CardContent className="space-y-3">
-              <p className="text-sm font-mono bg-muted px-3 py-2 rounded break-all select-all">
-                https://bareefers.org/forum/login/
-              </p>
+              <Button asChild>
+                <a href={loginUrl}>
+                  Log in to BAR forum
+                </a>
+              </Button>
               <p className="text-xs text-muted-foreground">
-                Type or paste that in the address bar. Do not use a link from this page or the forum may show a security error.
-              </p>
-              <p className="text-xs text-muted-foreground">
-                If you are already logged in and still see this, your browser is blocking cross-site cookies for bareefers.org. Allow third-party cookies (or add an exception for bareefers.org), then refresh.
+                After login, you will be returned here automatically.
               </p>
             </CardContent>
           )}

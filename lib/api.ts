@@ -20,15 +20,30 @@ export const apiClient = axios.create({
 // and ask the user to return here and refresh.
 const FORUM_LOGIN_URL = 'https://bareefers.org/forum/login/';
 
+function getForumLoginUrl() {
+  if (typeof window === 'undefined') {
+    return FORUM_LOGIN_URL;
+  }
+  const redirect = encodeURIComponent(window.location.href);
+  return `${FORUM_LOGIN_URL}?_xfRedirect=${redirect}`;
+}
+
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Do not open or redirect to forum login from here — XenForo often shows
-      // "Security error" when the request comes from our origin. User should
-      // open bareefers.org/forum/login/ in a new tab by typing the URL or bookmark.
-      // The UI shows "Log in required" with instructions.
+      // On bareefers.org subdomains, redirect to forum login and return to
+      // current page after auth. Guard to avoid rapid repeated redirects.
+      if (typeof window !== 'undefined' && window.location.hostname.endsWith('.bareefers.org')) {
+        const key = 'barcodeLoginRedirectAt';
+        const now = Date.now();
+        const last = Number(sessionStorage.getItem(key) || '0');
+        if (now - last > 5000) {
+          sessionStorage.setItem(key, String(now));
+          window.location.href = getForumLoginUrl();
+        }
+      }
     }
     if (error.response?.status === 403) {
       // Redirect to supporting member info
