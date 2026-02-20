@@ -53,23 +53,24 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="container flex h-16 items-center justify-between px-4">
-        {/* Logo - clickable link to barcode.bareefers.org */}
-        <div className="flex items-center gap-6">
+      <nav className="container flex min-h-16 sm:min-h-24 items-center justify-between gap-2 px-3 sm:px-4 py-2">
+        {/* Logo - 2x size, mobile-friendly (capped on small screens) */}
+        <div className="flex shrink-0 items-center gap-3 sm:gap-6 min-w-0">
           <a
             href="https://barcode.bareefers.org"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-primary rounded"
+            className="flex items-center min-w-0 focus:outline-none focus:ring-2 focus:ring-primary rounded touch-manipulation"
             aria-label="BARcode at bareefers.org"
           >
             <Image
               src="/barcode-logo.png"
               alt="BARcode - Bay Area Reefers"
-              width={180}
-              height={48}
-              className="h-10 w-auto object-contain"
+              width={360}
+              height={96}
+              className="h-14 w-auto max-w-[50vw] sm:h-20 sm:max-w-[320px] object-contain object-left"
               priority
+              sizes="(max-width: 640px) 50vw, 320px"
             />
           </a>
 
