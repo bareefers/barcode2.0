@@ -91,9 +91,9 @@ export function Header() {
         <div className="flex items-center gap-2">
           {userData && (
             <>
-              {/* Add Button */}
+              {/* Add Button - explicit colors so it's visible on header background */}
               <Link href="/add">
-                <Button variant="default" size="sm" className="hidden sm:flex">
+                <Button variant="default" size="sm" className="hidden sm:flex bg-blue-600 text-white hover:bg-blue-700">
                   Add Item
                 </Button>
               </Link>

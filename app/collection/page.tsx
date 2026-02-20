@@ -149,7 +149,7 @@ export default function CollectionPage() {
             </Button>
             
             <Link href="/add">
-              <Button>Add New Item</Button>
+              <Button className="bg-blue-600 text-white hover:bg-blue-700">Add New Item</Button>
             </Link>
 
             <div className="flex gap-1 border rounded-md p-1 ml-auto">
