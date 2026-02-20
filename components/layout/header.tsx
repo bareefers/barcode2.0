@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -53,16 +54,24 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container flex h-16 items-center justify-between px-4">
-        {/* Logo */}
+        {/* Logo - clickable link to barcode.bareefers.org */}
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-cyan-600">
-              <span className="text-lg font-bold text-white">🪸</span>
-            </div>
-            <span className="hidden font-bold text-xl sm:inline-block bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              BARcode
-            </span>
-          </Link>
+          <a
+            href="https://barcode.bareefers.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-primary rounded"
+            aria-label="BARcode at bareefers.org"
+          >
+            <Image
+              src="/barcode-logo.png"
+              alt="BARcode - Bay Area Reefers"
+              width={180}
+              height={48}
+              className="h-10 w-auto object-contain"
+              priority
+            />
+          </a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:gap-1">
