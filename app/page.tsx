@@ -78,7 +78,7 @@ export default function HomePage() {
               </Button>
             </Link>
             <Link href="/add">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 border-0 shadow">
                 Add New Item
               </Button>
             </Link>
