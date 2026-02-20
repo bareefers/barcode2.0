@@ -25,10 +25,10 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Try to open login in new tab so user stays on this app. If popup is blocked,
-      // do NOT redirect — let the page show "Log in required" with the button; user
-      // can click it (user gesture usually allows new tab) or copy the URL.
-      window.open(FORUM_LOGIN_URL, '_blank', 'noopener,noreferrer');
+      // Do not open or redirect to forum login from here — XenForo often shows
+      // "Security error" when the request comes from our origin. User should
+      // open bareefers.org/forum/login/ in a new tab by typing the URL or bookmark.
+      // The UI shows "Log in required" with instructions.
     }
     if (error.response?.status === 403) {
       // Redirect to supporting member info

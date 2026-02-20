@@ -110,17 +110,18 @@ export default function CollectionPage() {
             </CardTitle>
             <CardDescription>
               {is401
-                ? 'We opened the login page in a new tab. After you log in there, return to this tab and refresh — or open barcode2-0-omega.vercel.app again.'
+                ? 'In a new tab go to the link below, log in, then return here and refresh.'
                 : 'Unable to load your collection. Please try again later.'}
             </CardDescription>
           </CardHeader>
           {is401 && (
-            <CardContent>
-              <Button asChild variant="default">
-                <a href="https://bareefers.org/forum/login/" target="_blank" rel="noopener noreferrer">
-                  Open login page
-                </a>
-              </Button>
+            <CardContent className="space-y-3">
+              <p className="text-sm font-mono bg-muted px-3 py-2 rounded break-all select-all">
+                https://bareefers.org/forum/login/
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Type or paste that in the address bar. Do not use a link from this page or the forum may show a security error.
+              </p>
             </CardContent>
           )}
         </Card>

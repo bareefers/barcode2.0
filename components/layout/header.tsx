@@ -150,11 +150,16 @@ export function Header() {
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer" onClick={() => {
-                    window.location.href = 'https://bareefers.org/forum/login/';
-                  }}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
+                  <DropdownMenuItem asChild>
+                    <a
+                      href="https://bareefers.org/forum/login/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center cursor-pointer"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Log out (at forum)
+                    </a>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
