@@ -16,34 +16,14 @@ export const apiClient = axios.create({
   },
 });
 
-// Forum login URL; after login XenForo only redirects to same domain, so we open in new tab
-// and ask the user to return here and refresh.
-const FORUM_LOGIN_URL = 'https://bareefers.org/forum/login/';
-
-function getForumLoginUrl() {
-  if (typeof window === 'undefined') {
-    return FORUM_LOGIN_URL;
-  }
-  const redirect = encodeURIComponent(window.location.href);
-  return `${FORUM_LOGIN_URL}?_xfRedirect=${redirect}`;
-}
-
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // On bareefers.org subdomains, redirect to forum login and return to
-      // current page after auth. Guard to avoid rapid repeated redirects.
-      if (typeof window !== 'undefined' && window.location.hostname.endsWith('.bareefers.org')) {
-        const key = 'barcodeLoginRedirectAt';
-        const now = Date.now();
-        const last = Number(sessionStorage.getItem(key) || '0');
-        if (now - last > 5000) {
-          sessionStorage.setItem(key, String(now));
-          window.location.href = getForumLoginUrl();
-        }
-      }
+      // Do not auto-redirect: show "Log in required" card with button so user
+      // stays on the app. XenForo does not allow _xfRedirect to external hostnames,
+      // so after login user must return to this tab and refresh.
     }
     if (error.response?.status === 403) {
       // Redirect to supporting member info

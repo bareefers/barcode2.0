@@ -28,9 +28,7 @@ import Image from 'next/image';
 import type { Frag, FragFilter } from '@/types';
 
 export default function CollectionPage() {
-  const loginUrl = typeof window !== 'undefined'
-    ? `https://bareefers.org/forum/login/?_xfRedirect=${encodeURIComponent(window.location.href)}`
-    : 'https://bareefers.org/forum/login/';
+  const FORUM_LOGIN = 'https://bareefers.org/forum/login/';
 
   const { data: collectionData, isLoading, error } = useCollection();
   const { data: enumsData } = useEnums();
@@ -121,12 +119,12 @@ export default function CollectionPage() {
           {is401 && (
             <CardContent className="space-y-3">
               <Button asChild>
-                <a href={loginUrl}>
+                <a href={FORUM_LOGIN} target="_blank" rel="noopener noreferrer">
                   Log in to BAR forum
                 </a>
               </Button>
               <p className="text-xs text-muted-foreground">
-                After login, you will be returned here automatically.
+                After you log in, return to this tab and refresh the page.
               </p>
             </CardContent>
           )}
