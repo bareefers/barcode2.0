@@ -39,7 +39,7 @@ export default function HomePage() {
             </CardTitle>
             <CardDescription>
               {is401
-                ? 'In a new tab go to the link below, log in, then return here and refresh.'
+                ? 'Log in at the URL below, then return here and refresh.'
                 : 'Unable to load your collection. Please try again later.'}
             </CardDescription>
           </CardHeader>
@@ -50,6 +50,9 @@ export default function HomePage() {
               </p>
               <p className="text-xs text-muted-foreground">
                 Type or paste that in the address bar. Do not use a link from this page or the forum may show a security error.
+              </p>
+              <p className="text-xs text-muted-foreground">
+                If you are already logged in and still see this, your browser is blocking cross-site cookies for bareefers.org. Allow third-party cookies (or add an exception for bareefers.org), then refresh.
               </p>
             </CardContent>
           )}
