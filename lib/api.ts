@@ -25,13 +25,10 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Open login in new tab so user stays on this app. After logging in on bareefers.org,
-      // they return to this tab and refresh; the cookie will then be sent to the API.
-      const loginWindow = window.open(FORUM_LOGIN_URL, '_blank', 'noopener,noreferrer');
-      if (!loginWindow) {
-        // Popup blocked: fall back to same-tab redirect
-        window.location.href = FORUM_LOGIN_URL;
-      }
+      // Try to open login in new tab so user stays on this app. If popup is blocked,
+      // do NOT redirect — let the page show "Log in required" with the button; user
+      // can click it (user gesture usually allows new tab) or copy the URL.
+      window.open(FORUM_LOGIN_URL, '_blank', 'noopener,noreferrer');
     }
     if (error.response?.status === 403) {
       // Redirect to supporting member info

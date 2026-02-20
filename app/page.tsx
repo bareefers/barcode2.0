@@ -39,7 +39,7 @@ export default function HomePage() {
             </CardTitle>
             <CardDescription>
               {is401
-                ? 'We opened the login page in a new tab. After you log in there, return here and refresh the page.'
+                ? 'We opened the login page in a new tab. After you log in there, return to this tab and refresh — or open barcode2-0-omega.vercel.app again.'
                 : 'Unable to load your collection. Please try again later.'}
             </CardDescription>
           </CardHeader>
