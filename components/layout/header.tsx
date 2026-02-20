@@ -68,7 +68,7 @@ export function Header() {
               alt="BARcode - Bay Area Reefers"
               width={360}
               height={96}
-              className="h-14 w-auto max-w-[50vw] sm:h-20 sm:max-w-[320px] object-contain object-left"
+              className="h-14 w-auto max-w-[50vw] sm:h-[calc(var(--spacing)*35)] sm:max-w-[320px] object-contain object-left"
               priority
               sizes="(max-width: 640px) 50vw, 320px"
             />
