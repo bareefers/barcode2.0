@@ -112,7 +112,7 @@ function AddFragForm() {
         formData.append('fragId', fragId);
       }
 
-      const endpoint = '/dbtc/add'; // Backend handles both add and edit
+      const endpoint = fragId ? `/dbtc/update/${fragId}` : '/dbtc/add-new-item';
       await apiClient.post(endpoint, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });

@@ -13,7 +13,7 @@ export default function TanksPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['tanks'],
     queryFn: async () => {
-      const { data } = await apiClient.get<{ tanks: Tank[] }>('/tank');
+      const { data } = await apiClient.get<{ tanks: Tank[] }>('/tank/list');
       return data;
     },
   });
@@ -81,7 +81,8 @@ export default function TanksPage() {
                   <CardTitle>{tank.name}</CardTitle>
                   <CardDescription>
                     {tank.volume && `${tank.volume} gallons`}
-                    {tank.startDate && ` • Started ${new Date(tank.startDate).toLocaleDateString()}`}
+                    {(tank.startDate || (tank as any).dateStarted) &&
+                      ` • Started ${new Date((tank.startDate || (tank as any).dateStarted) as string).toLocaleDateString()}`}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

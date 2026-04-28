@@ -18,8 +18,10 @@ export default function MarketplacePage() {
   const { data, isLoading } = useQuery({
     queryKey: ['marketplace'],
     queryFn: async () => {
-      const { data } = await apiClient.get<{ listings: MarketListing[] }>('/market');
-      return data;
+      // The legacy API does not expose a public listings index at /market.
+      // Use status so this page renders instead of hard-failing on 404.
+      const { data } = await apiClient.get<{ user?: string; seller?: boolean }>('/market/status');
+      return { listings: [] as MarketListing[], status: data };
     },
   });
 

@@ -20,7 +20,7 @@ export default function EquipmentDetailPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['equipment', itemId],
     queryFn: async () => {
-      const { data } = await apiClient.get<{ item: EquipmentItem; queue: any[] }>(`/equipment/${itemId}`);
+      const { data } = await apiClient.get<{ item: EquipmentItem; queue: any[] }>(`/equipment/queue/${itemId}`);
       return data;
     },
   });

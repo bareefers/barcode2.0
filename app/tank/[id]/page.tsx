@@ -83,11 +83,11 @@ export default function TankDetailPage() {
                   <p className="text-sm text-muted-foreground">{tank.description}</p>
                 </div>
               )}
-              {tank.startDate && (
+              {(tank.startDate || (tank as any).dateStarted) && (
                 <div>
                   <h3 className="font-semibold mb-2">Started</h3>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(tank.startDate).toLocaleDateString()}
+                    {new Date(((tank.startDate || (tank as any).dateStarted) as string)).toLocaleDateString()}
                   </p>
                 </div>
               )}
