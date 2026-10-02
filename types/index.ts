@@ -138,6 +138,9 @@ export interface ImpersonateResponse {
   name: string;
   canImpersonate: boolean;
   impersonating: boolean;
+  isAdmin?: boolean;
+  isMod?: boolean;
+  canModerate?: boolean;
 }
 
 export interface FragLineageNode {

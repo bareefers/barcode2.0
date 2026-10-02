@@ -4,19 +4,31 @@ import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Shield, Users, Box, Ban, ListOrdered, Wrench } from 'lucide-react';
+import { Shield, Users, Box, Ban, Store } from 'lucide-react';
 import Link from 'next/link';
+import { legacyBarcodeUrl } from '@/lib/legacy-barcode';
+
+type AdminUser = {
+  canModerate?: boolean;
+  canImpersonate?: boolean;
+  isAdmin?: boolean;
+  isMod?: boolean;
+};
 
 export default function AdminPage() {
   const { data: userData } = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
-      const { data } = await apiClient.get('/impersonate');
+      const { data } = await apiClient.get<AdminUser>('/impersonate');
       return data;
     },
   });
 
-  if (!userData?.canImpersonate) {
+  const canAccess = Boolean(
+    userData?.canModerate || userData?.canImpersonate || userData?.isAdmin || userData?.isMod
+  );
+
+  if (!canAccess) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Card className="max-w-md">
@@ -24,7 +36,7 @@ export default function AdminPage() {
             <Shield className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
             <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
             <p className="text-muted-foreground mb-6">
-              You don&apos;t have permission to access the admin panel.
+              Forum moderators (XenForo Moderating group) and BARcode admins can access this panel.
             </p>
             <Link href="/">
               <Button>Back to Home</Button>
@@ -38,13 +50,14 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white">
-        <div className="container mx-auto px-4 py-16">
-          <div className="flex items-center gap-3 mb-4">
-            <Shield className="h-12 w-12" />
-            <h1 className="text-5xl font-bold">Admin Panel</h1>
+        <div className="container mx-auto px-4 py-12">
+          <div className="flex items-center gap-3 mb-2">
+            <Shield className="h-10 w-10" />
+            <h1 className="text-4xl font-bold">Moderation</h1>
           </div>
-          <p className="text-xl text-red-100">
-            Manage equipment, holders, bans, and listings
+          <p className="text-red-100">
+            Manage equipment status, holders, and bans
+            {userData?.isMod && !userData?.isAdmin ? ' (moderator)' : ''}
           </p>
         </div>
       </div>
@@ -56,14 +69,12 @@ export default function AdminPage() {
               <Box className="h-8 w-8 mb-2 text-primary" />
               <CardTitle>Equipment queue</CardTitle>
               <CardDescription>
-                Manage who&apos;s in line, add/remove users, transfer items
+                Status, location, current holder, transfers, mark returned
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/admin/equipment">
-                <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">
-                  Manage equipment
-                </Button>
+                <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">Manage equipment</Button>
               </Link>
             </CardContent>
           </Card>
@@ -71,16 +82,12 @@ export default function AdminPage() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <Users className="h-8 w-8 mb-2 text-primary" />
-              <CardTitle>Equipment holders</CardTitle>
-              <CardDescription>
-                Add or remove users who can hold equipment
-              </CardDescription>
+              <CardTitle>Who may hold</CardTitle>
+              <CardDescription>Add/remove equipment holders and their locations</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/admin/holders">
-                <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">
-                  Manage holders
-                </Button>
+                <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">Manage holders</Button>
               </Link>
             </CardContent>
           </Card>
@@ -88,66 +95,31 @@ export default function AdminPage() {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <Ban className="h-8 w-8 mb-2 text-primary" />
-              <CardTitle>Bans</CardTitle>
-              <CardDescription>
-                Ban or unban users from equipment
-              </CardDescription>
+              <CardTitle>Equipment bans</CardTitle>
+              <CardDescription>Ban or unban members from equipment</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/admin/bans">
-                <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">
-                  Manage bans
-                </Button>
+                <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">Manage bans</Button>
               </Link>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow">
+          <Card className="hover:shadow-lg transition-shadow opacity-90">
             <CardHeader>
-              <ListOrdered className="h-8 w-8 mb-2 text-primary" />
-              <CardTitle>Listings (DBTC)</CardTitle>
+              <Store className="h-8 w-8 mb-2 text-muted-foreground" />
+              <CardTitle>Marketplace listings</CardTitle>
               <CardDescription>
-                Run admin scripts for frags and mothers
+                Market listing/transaction APIs are not live yet in BARcode 2.0. Use classic for any market
+                seller tools until we build moderation here.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/admin/scripts">
-                <Button className="w-full" variant="outline">
-                  Run scripts
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <Wrench className="h-8 w-8 mb-2 text-primary" />
-              <CardTitle>Impersonate user</CardTitle>
-              <CardDescription>
-                View the site as another user
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full" variant="outline" disabled>
-                Coming soon
+              <Button asChild variant="outline" className="w-full">
+                <a href={legacyBarcodeUrl('/bc/market')} target="_blank" rel="noopener noreferrer">
+                  Open classic market
+                </a>
               </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <Box className="h-8 w-8 mb-2 text-primary" />
-              <CardTitle>Analytics</CardTitle>
-              <CardDescription>
-                View system analytics
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/stats">
-                <Button className="w-full" variant="outline">
-                  View stats
-                </Button>
-              </Link>
             </CardContent>
           </Card>
         </div>
