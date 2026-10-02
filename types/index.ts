@@ -61,16 +61,55 @@ export interface Tank {
   owner: User;
 }
 
+/** Matches `GET /equipment` / `GET /equipment/queue/:id` item rows (SQLite `items.*` + queue join). */
 export interface EquipmentItem {
   itemId: number;
   name: string;
-  description?: string;
-  picture?: string;
-  owner: User;
-  status: 'available' | 'in_use' | 'maintenance';
-  currentHolder?: User;
-  queueLength?: number;
-  inLine?: boolean;
+  shortName: string;
+  picture: string;
+  /** URL to borrowing rules. */
+  rules: string;
+  /** URL to usage instructions. */
+  instructions: string;
+  quantity: number;
+  maxDays: number;
+  supportingMemberDays: number;
+  alertStartDay: number;
+  threadId?: number;
+  /** User is on the wait list for this item (joined for current user). */
+  inList: number | boolean;
+  /** User currently holds a unit. */
+  hasIt: number | boolean;
+  /** User marked their held unit as returned (`dateDone`). */
+  isAvailable: number | boolean;
+}
+
+/** `GET /equipment/queue/:itemId` → `queue.haves[]` entry (holder or returned unit). */
+export interface EquipmentHaveEntry {
+  user: User;
+  userId?: number;
+  isAvailable: boolean;
+  overdue?: boolean;
+  age?: string;
+  ageAvailable?: string;
+  days?: number;
+  daysAvailable?: number;
+  location?: string;
+}
+
+/** `GET /equipment/queue/:itemId` → `queue.waiters[]` entry. */
+export interface EquipmentWaiterEntry {
+  user: User;
+  userId?: number;
+  daysWaiting: number;
+  ageWaiting: string;
+  eta: string;
+  location?: string;
+}
+
+export interface EquipmentQueuePayload {
+  haves: EquipmentHaveEntry[];
+  waiters: EquipmentWaiterEntry[];
 }
 
 export interface MarketListing {

@@ -24,10 +24,11 @@ import {
   ShoppingCart, 
   Users, 
   BarChart3,
-  Settings,
   LogOut,
   User,
   Shield,
+  Trophy,
+  CalendarDays,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUser } from '@/hooks/use-user';
@@ -40,6 +41,8 @@ const navigation = [
   { name: 'Marketplace', href: '/market', icon: ShoppingCart },
   { name: 'Members', href: '/members', icon: Users },
   { name: 'Stats', href: '/stats', icon: BarChart3 },
+  { name: 'DBTC Top 10', href: '/top10', icon: Trophy },
+  { name: 'Swaps', href: '/swaps', icon: CalendarDays },
 ];
 
 export function Header() {
@@ -56,12 +59,10 @@ export function Header() {
       <nav className="container flex min-h-16 sm:min-h-24 items-center justify-between gap-2 px-3 sm:px-4 py-2">
         {/* Logo - 2x size, mobile-friendly (capped on small screens) */}
         <div className="flex shrink-0 items-center gap-3 sm:gap-6 min-w-0">
-          <a
-            href="https://barcode.bareefers.org"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/"
             className="flex items-center min-w-0 focus:outline-none focus:ring-2 focus:ring-primary rounded touch-manipulation"
-            aria-label="BARcode at bareefers.org"
+            aria-label="BARcode 2.0 home"
           >
             <Image
               src="/barcode-logo.png"
@@ -72,7 +73,7 @@ export function Header() {
               priority
               sizes="(max-width: 640px) 50vw, 320px"
             />
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:gap-1">
@@ -145,12 +146,6 @@ export function Header() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings" className="cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </Link>
-                  </DropdownMenuItem>
                   {userData.canImpersonate && (
                     <DropdownMenuItem asChild>
                       <Link href="/admin" className="cursor-pointer">

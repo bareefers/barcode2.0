@@ -8,6 +8,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Droplets, Plus } from 'lucide-react';
 import type { Tank } from '@/types';
+import { legacyBarcodeUrl } from '@/lib/legacy-barcode';
+
+const ADD_TANK_LEGACY = legacyBarcodeUrl('/bc/add-tank');
 
 export default function TanksPage() {
   const { data, isLoading } = useQuery({
@@ -37,12 +40,12 @@ export default function TanksPage() {
           <p className="text-xl text-cyan-100 mb-8">
             Manage your reef tanks and track parameters
           </p>
-          <Link href="/add-tank">
-            <Button size="lg" variant="secondary">
+          <Button size="lg" variant="secondary" asChild>
+            <a href={ADD_TANK_LEGACY} rel="noopener noreferrer">
               <Plus className="mr-2 h-5 w-5" />
               Add Tank
-            </Button>
-          </Link>
+            </a>
+          </Button>
         </div>
       </div>
 
@@ -55,12 +58,12 @@ export default function TanksPage() {
               <p className="text-muted-foreground mb-6">
                 Add your first tank to start tracking parameters and livestock
               </p>
-              <Link href="/add-tank">
-                <Button>
+              <Button asChild>
+                <a href={ADD_TANK_LEGACY} rel="noopener noreferrer">
                   <Plus className="mr-2 h-4 w-4" />
                   Add Your First Tank
-                </Button>
-              </Link>
+                </a>
+              </Button>
             </CardContent>
           </Card>
         ) : (

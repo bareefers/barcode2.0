@@ -18,6 +18,14 @@ export function Footer() {
         </div>
         <div className="flex gap-4">
           <a
+            href="https://barcode.bareefers.org"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Classic BARcode
+          </a>
+          <a
             href="https://bareefers.org/forum/threads/dbtc-info-rules.23030/"
             target="_blank"
             rel="noreferrer"

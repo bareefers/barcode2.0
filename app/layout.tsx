@@ -4,6 +4,7 @@ import "./globals.css";
 import { QueryProvider } from "@/providers/query-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { BetaBanner } from "@/components/layout/beta-banner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased flex min-h-screen flex-col`}>
         <QueryProvider>
+          <BetaBanner />
           <Header />
           <main className="flex-1">
             {children}

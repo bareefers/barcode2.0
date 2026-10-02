@@ -11,6 +11,9 @@ import Image from 'next/image';
 import { ShoppingCart, Search } from 'lucide-react';
 import { useState } from 'react';
 import type { MarketListing } from '@/types';
+import { legacyBarcodeUrl } from '@/lib/legacy-barcode';
+
+const MARKET_SELLER_LEGACY = legacyBarcodeUrl('/bc/market/seller');
 
 export default function MarketplacePage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,11 +52,11 @@ export default function MarketplacePage() {
           <p className="text-xl text-green-100 mb-8">
             Buy and sell corals with fellow reefers
           </p>
-          <Link href="/market/sell">
-            <Button size="lg" variant="secondary">
+          <Button size="lg" variant="secondary" asChild>
+            <a href={MARKET_SELLER_LEGACY} rel="noopener noreferrer">
               List an Item
-            </Button>
-          </Link>
+            </a>
+          </Button>
         </div>
       </div>
 
