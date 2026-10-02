@@ -1,122 +1,72 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/lib/api';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import Link from 'next/link';
-import { Users, Search, MapPin } from 'lucide-react';
 import { useState } from 'react';
-import type { User } from '@/types';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { apiClient } from '@/lib/api';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Users, Search } from 'lucide-react';
 
 export default function MembersPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['members'],
+  const { data: suggestions, isFetching } = useQuery({
+    queryKey: ['find-users', searchQuery],
     queryFn: async () => {
-      const { data } = await apiClient.get<{ members: User[] }>('/user/members');
-      return data;
+      const { data } = await apiClient.get<{ users: [number, string][] }>('/dbtc/find-users', {
+        params: { prefix: searchQuery, all: 'true' },
+      });
+      return data.users.map(([id, name]) => ({ id, name }));
     },
+    enabled: searchQuery.trim().length >= 2,
   });
-
-  const filteredMembers = data?.members.filter(member =>
-    member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.location?.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-        <div className="container mx-auto px-4 py-16">
-          <div className="flex items-center gap-3 mb-4">
-            <Users className="h-12 w-12" />
-            <h1 className="text-5xl font-bold">Community Members</h1>
-          </div>
-          <p className="text-xl text-purple-100">
-            Connect with fellow Bay Area Reefers
-          </p>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Search */}
-        <div className="mb-8">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search members..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <p className="text-sm text-muted-foreground mt-2">
-            {filteredMembers.length} member{filteredMembers.length !== 1 ? 's' : ''} found
-          </p>
-        </div>
-
-        {/* Members Grid */}
-        {filteredMembers.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-12">
-              <Users className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Members Found</h3>
-              <p className="text-muted-foreground">
-                Try a different search term
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredMembers.map((member) => {
-              const initials = member.name
-                .split(' ')
-                .map(n => n[0])
-                .join('')
-                .toUpperCase()
-                .slice(0, 2);
-
-              return (
-                <Card key={member.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="text-center">
-                    <div className="mx-auto mb-4">
-                      <Avatar className="h-20 w-20">
-                        <AvatarFallback className="bg-gradient-to-br from-blue-600 to-cyan-600 text-white text-2xl">
-                          {initials}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
-                    <CardTitle>{member.name}</CardTitle>
-                    {member.location && (
-                      <CardDescription className="flex items-center justify-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {member.location}
-                      </CardDescription>
-                    )}
-                  </CardHeader>
-                  <CardContent>
-                    <Link href={`/member/${member.id}`}>
-                      <Button className="w-full" variant="outline">
-                        View Profile
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
+      <div className="container mx-auto px-4 py-10 max-w-md">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+              <Users className="h-7 w-7" />
+              Member lookup
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Start typing a member name…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+                autoFocus
+              />
+            </div>
+            {isFetching && (
+              <p className="text-sm text-muted-foreground text-center">Searching…</p>
+            )}
+            {suggestions && suggestions.length > 0 && (
+              <ul className="border rounded-md divide-y max-h-80 overflow-y-auto">
+                {suggestions.map((u) => (
+                  <li key={u.id}>
+                    <button
+                      type="button"
+                      className="w-full text-left px-3 py-2.5 hover:bg-muted text-sm font-medium"
+                      onClick={() => router.push(`/member/${u.id}`)}
+                    >
+                      {u.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {searchQuery.trim().length >= 2 && !isFetching && suggestions?.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center">No members found</p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

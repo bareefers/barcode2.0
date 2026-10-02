@@ -134,6 +134,7 @@ export interface CollectionResponse {
 }
 
 export interface ImpersonateResponse {
+  id: number;
   name: string;
   canImpersonate: boolean;
   impersonating: boolean;

@@ -138,7 +138,7 @@ export default function CollectionPage() {
       {/* Header */}
       <div className="border-b bg-card">
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold mb-4">Your Collection</h1>
+          <h1 className="text-3xl font-bold mb-4">Your collection</h1>
           
           <div className="flex flex-wrap gap-2">
             <Button onClick={() => setShowFilter(true)} variant="outline">

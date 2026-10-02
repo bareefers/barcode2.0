@@ -17,6 +17,12 @@ interface Top10Response {
   likes: TopRow[];
 }
 
+function displayName(row: TopRow) {
+  if (row.ownerName && row.ownerName !== '<unknown>') return row.ownerName;
+  if (row.ownerId != null) return `User #${row.ownerId}`;
+  return '—';
+}
+
 const LISTS: {
   key: keyof Top10Response;
   name: string;
@@ -79,16 +85,16 @@ export default function Top10Page() {
                 <table className="w-full text-sm">
                   <tbody>
                     {(data[list.key] ?? []).map((row, i) => (
-                      <tr key={i} className="border-b last:border-0">
+                      <tr key={`${list.key}-${row.ownerId ?? row.ownerName ?? i}`} className="border-b last:border-0">
                         <td className="py-2 pr-2 text-left">
                           {list.notUsers ? (
-                            <span>{row.ownerName ?? '—'}</span>
+                            <span title="Coral / mother name">{displayName(row)}</span>
                           ) : row.ownerId != null ? (
-                            <Link href={`/member/${row.ownerId}`} className="text-primary hover:underline">
-                              {row.ownerName ?? `#${row.ownerId}`}
+                            <Link href={`/member/${row.ownerId}`} className="text-primary hover:underline font-medium">
+                              {displayName(row)}
                             </Link>
                           ) : (
-                            row.ownerName ?? '—'
+                            displayName(row)
                           )}
                         </td>
                         <td className="py-2 text-right tabular-nums font-medium">{row.count}</td>
