@@ -47,7 +47,7 @@ import { useFragLineage, useFragKids, useFragFans, useBecomeFan, useRemoveFan, u
 
 interface FragCardProps {
   frag: Frag;
-  user: User;
+  user?: User | null;
   showOwner?: boolean;
   expanded?: boolean;
 }
@@ -70,11 +70,15 @@ export function FragCard({ frag, user, showOwner = false, expanded = false }: Fr
   const shareFrag = useShareFrag();
   const reportOops = useReportOops();
 
-  const ownsIt = frag.ownsIt;
+  const owner = frag.owner;
+  const ownerId = owner?.id ?? (frag as Frag & { ownerId?: number }).ownerId;
+  const ownsIt = Boolean(
+    frag.ownsIt || (user?.id != null && ownerId != null && user.id === ownerId)
+  );
   const isAlive = frag.isAlive;
   const isDbtc = frag.rules === 'dbtc';
   const isPrivate = frag.rules === 'private';
-  const fragsAvailable = isPrivate ? 0 : frag.fragsAvailable + (frag.otherFragsAvailable || 0);
+  const fragsAvailable = isPrivate ? 0 : (frag.fragsAvailable || 0) + (frag.otherFragsAvailable || 0);
 
   const age = isAlive && frag.dateAcquired
     ? formatDistance(new Date(frag.dateAcquired), new Date(), { addSuffix: false }) + ' old'
@@ -167,10 +171,14 @@ export function FragCard({ frag, user, showOwner = false, expanded = false }: Fr
           <div className="flex flex-wrap gap-2 mb-4">
             {showOwner && (
               <Badge variant={ownsIt ? 'default' : 'secondary'}>
-                <Link href={`/member/${frag.owner.id}`} className="flex items-center gap-1">
-                  {ownsIt ? 'Yours' : frag.owner.name}
-                  <ExternalLink className="h-3 w-3" />
-                </Link>
+                {ownerId != null ? (
+                  <Link href={`/member/${ownerId}`} className="flex items-center gap-1">
+                    {ownsIt ? 'Yours' : owner?.name || `User #${ownerId}`}
+                    <ExternalLink className="h-3 w-3" />
+                  </Link>
+                ) : (
+                  <span>{ownsIt ? 'Yours' : owner?.name || 'Unknown owner'}</span>
+                )}
               </Badge>
             )}
             
@@ -281,7 +289,7 @@ export function FragCard({ frag, user, showOwner = false, expanded = false }: Fr
                         {fansData.users.map((fan) => (
                           <div key={fan.id} className="text-sm">
                             <Link href={`/member/${fan.id}`} className="text-primary hover:underline">
-                              {fan.id === user.id ? 'You' : fan.name}
+                              {user?.id != null && fan.id === user.id ? 'You' : fan.name}
                             </Link>
                             {fan.location && <span className="text-muted-foreground"> in {fan.location}</span>}
                           </div>

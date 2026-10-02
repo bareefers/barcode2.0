@@ -268,7 +268,15 @@ export default function RulesCollectionClient() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {mothers.map((m) => (
-              <FragCard key={m.fragId} frag={m} user={user!} showOwner />
+              <FragCard
+                key={m.fragId}
+                frag={{
+                  ...m,
+                  ownsIt: m.ownsIt || (user?.id != null && m.owner?.id === user.id),
+                }}
+                user={user ?? undefined}
+                showOwner
+              />
             ))}
           </div>
         )}
